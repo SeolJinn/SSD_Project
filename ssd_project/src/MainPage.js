@@ -10,7 +10,7 @@ const MainPage = () => {
     signOut(auth)
       .then(() => {
         console.log('User signed out');
-        navigate('/'); 
+        navigate('/');
       })
       .catch(error => {
         console.error('Sign out error:', error);
@@ -21,6 +21,9 @@ const MainPage = () => {
     <div>
       <h2>Main Page</h2>
       <button onClick={handleSignOut}>Sign Out</button>
+      <button onClick={() => navigate('/add-friend')}>Add a Friend</button>
+      <button onClick={() => navigate('/pending-requests')}>View Pending Requests</button>
+      <button onClick={() => navigate('/friends-list')}>View Friends List</button>
       {/* Other main page content */}
     </div>
   );

@@ -4,6 +4,9 @@ import LandingPage from './LandingPage';
 import Login from './Login';
 import MainPage from './MainPage';
 import Register from './Register';
+import AddFriend from './AddFriend';
+import PendingRequests from './PendingRequests';
+import FriendsList from './FriendsList'; // Import FriendsList component
 import ProtectedRoute from './ProtectedRoute';  
 
 function App() {
@@ -18,6 +21,24 @@ function App() {
         <Route path="/main" element={
           <ProtectedRoute>
             <MainPage />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/add-friend" element={
+          <ProtectedRoute>
+            <AddFriend />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/pending-requests" element={
+          <ProtectedRoute>
+            <PendingRequests />
+          </ProtectedRoute>
+        } />
+
+        <Route path="/friends-list" element={
+          <ProtectedRoute>
+            <FriendsList />
           </ProtectedRoute>
         } />
 

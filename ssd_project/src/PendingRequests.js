@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { db, auth } from './firebase-config'; 
 import { collection, query, where, getDocs, updateDoc, doc, deleteDoc, getDoc, arrayUnion } from 'firebase/firestore';
+import StyledButton from './StyledButton';
 
 const PendingRequests = () => {
     const [incomingRequests, setIncomingRequests] = useState([]);
@@ -154,8 +155,8 @@ const PendingRequests = () => {
             {incomingRequests.map(request => (
                 <li key={request.id}>
                 Friend request from: {request.fromUsername}
-                <button onClick={() => handleAccept(request)}>Accept</button>
-                <button onClick={() => handleReject(request.id)}>Reject</button>
+                <StyledButton onClick={() => handleAccept(request)}>Accept</StyledButton>
+                <StyledButton onClick={() => handleReject(request.id)}>Reject</StyledButton>
                 </li>
             ))}
             </ul>
@@ -169,7 +170,7 @@ const PendingRequests = () => {
             {outgoingRequests.map(request => (
                 <li key={request.id}>
                 Friend request to: {request.toUsername}
-                <button onClick={() => handleReject(request.id)}>Cancel Request</button>
+                <StyledButton onClick={() => handleReject(request.id)}>Cancel Request</StyledButton>
                 </li>
             ))}
             </ul>

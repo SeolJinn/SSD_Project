@@ -1,6 +1,7 @@
 import { db } from './firebase-config';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 import React, { useState, useEffect } from 'react';
+import StyledButton from './StyledButton';
 
 const DataComponent = () => {
   const [items, setItems] = useState([]);
@@ -27,7 +28,7 @@ const DataComponent = () => {
   return (
     <div>
       <input value={input} onChange={(e) => setInput(e.target.value)} placeholder="Add Item" />
-      <button onClick={addItem}>Add</button>
+      <StyledButton onClick={addItem}>Add</StyledButton>
       <ul>
         {items.map((item, index) => <li key={index}>{item.name}</li>)}
       </ul>

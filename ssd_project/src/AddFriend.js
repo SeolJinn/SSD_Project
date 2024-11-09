@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { db, auth } from './firebase-config';
 import { collection, query, where, getDocs, addDoc, doc, getDoc } from 'firebase/firestore';
+import StyledButton from './StyledButton';
 
 const AddFriend = () => {
     const [email, setEmail] = useState('');
@@ -61,7 +62,7 @@ const AddFriend = () => {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Friend's email"
         />
-        <button onClick={handleAddFriend}>Add Friend</button>
+        <StyledButton onClick={handleAddFriend}>Add Friend</StyledButton>
         {message && <p>{message}</p>}
         </div>
     );

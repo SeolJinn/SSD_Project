@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // For redirection
 import { auth } from './firebase-config'; // Firebase config
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
+import StyledButton from './StyledButton';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -61,19 +62,19 @@ const Login = () => {
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Password"
       />
-      <button onClick={emailSignIn}>Sign in</button>
+      <StyledButton onClick={emailSignIn}>Sign in</StyledButton>
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       {showForgotPassword && (
         <p>
-          Forgot password? <button onClick={resetPassword}>Click here to reset</button>
+          Forgot password? <StyledButton onClick={resetPassword}>Click here to reset</StyledButton>
         </p>
       )}
 
       {showRegisterPrompt && (
         <p>
-          Don't have an account? <button onClick={() => navigate('/register')}>Register now</button>
+          Don't have an account? <StyledButton onClick={() => navigate('/register')}>Register now</StyledButton>
         </p>
       )}
     </div>

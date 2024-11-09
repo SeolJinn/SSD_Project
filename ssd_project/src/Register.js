@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { auth, db } from './firebase-config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import StyledButton from './StyledButton';
 
 const Register = () => {
   const [email, setEmail] = useState('');
@@ -63,7 +64,7 @@ const Register = () => {
         onChange={(e) => setUsername(e.target.value)}
         placeholder="Username"
       />
-      <button onClick={registerUser}>Register</button>
+      <StyledButton onClick={registerUser}>Register</StyledButton>
 
       {error && <p style={{ color: 'red' }}>{error}</p>} {/* Show error messages */}
     </div>

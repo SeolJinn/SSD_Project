@@ -1,5 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components'; // Import ThemeProvider
+import { GlobalStyles, theme } from './GlobalStyles'; // Import global styles and theme
 import LandingPage from './LandingPage';
 import Login from './Login';
 import MainPage from './MainPage';
@@ -11,40 +13,43 @@ import ProtectedRoute from './ProtectedRoute';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        
-        {/* Protect the /main route */}
-        <Route path="/main" element={
-          <ProtectedRoute>
-            <MainPage />
-          </ProtectedRoute>
-        } />
+    <ThemeProvider theme={theme}> {/* Wrap everything in ThemeProvider */}
+      <GlobalStyles /> {/* Apply global styles */}
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          
+          {/* Protect the /main route */}
+          <Route path="/main" element={
+            <ProtectedRoute>
+              <MainPage />
+            </ProtectedRoute>
+          } />
 
-        <Route path="/add-friend" element={
-          <ProtectedRoute>
-            <AddFriend />
-          </ProtectedRoute>
-        } />
+          <Route path="/add-friend" element={
+            <ProtectedRoute>
+              <AddFriend />
+            </ProtectedRoute>
+          } />
 
-        <Route path="/pending-requests" element={
-          <ProtectedRoute>
-            <PendingRequests />
-          </ProtectedRoute>
-        } />
+          <Route path="/pending-requests" element={
+            <ProtectedRoute>
+              <PendingRequests />
+            </ProtectedRoute>
+          } />
 
-        <Route path="/friends-list" element={
-          <ProtectedRoute>
-            <FriendsList />
-          </ProtectedRoute>
-        } />
+          <Route path="/friends-list" element={
+            <ProtectedRoute>
+              <FriendsList />
+            </ProtectedRoute>
+          } />
 
-        {/* Other protected routes here */}
-      </Routes>
-    </Router>
+          {/* Other protected routes here */}
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 

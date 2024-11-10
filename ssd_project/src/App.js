@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components'; // Import ThemeProvider
-import { GlobalStyles, theme } from './GlobalStyles'; // Import global styles and theme
+import { ThemeProvider } from 'styled-components';
+import { GlobalStyles, theme } from './GlobalStyles';
 import LandingPage from './LandingPage';
 import Login from './Login';
 import MainPage from './MainPage';
 import Register from './Register';
 import AddFriend from './AddFriend';
 import PendingRequests from './PendingRequests';
-import FriendsList from './FriendsList'; // Import FriendsList component
+import FriendsList from './FriendsList';
 import ProtectedRoute from './ProtectedRoute';  
 
 function App() {

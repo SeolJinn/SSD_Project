@@ -1,39 +1,74 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom'; 
-import { auth } from './firebase-config';  
-import { signOut } from 'firebase/auth';    
-import { FaUserPlus, FaUserClock, FaUserFriends } from 'react-icons/fa'; // Import icons
-import { MdLogout } from 'react-icons/md';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { auth, db } from './firebase-config';
+import { doc, getDoc } from 'firebase/firestore';
+import { signOut } from 'firebase/auth';
+import Sidebar from './Sidebar';
+import ChatList from './ChatList';
 import styled from 'styled-components';
-
-const IconButton = styled.button`
-  background: none;
-  border: none;
-  color: ${({ theme }) => theme.colors.buttonText};
-  font-size: 2rem;
-  cursor: pointer;
-  margin: 0.5rem;
-  transition: color 0.3s ease;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.accent};
-  }
-
-  &:focus {
-    outline: none;
-  }
-`;
 
 const MainPageContainer = styled.div`
   display: flex;
+  height: 100vh;
+  background-color: ${({ theme }) => theme.colors.background};
+`;
+
+const ChatArea = styled.div`
+  flex-grow: 1;
+  display: flex;
   flex-direction: column;
-  align-items: center;
+  padding: 20px;
+  background-color: ${({ theme }) => theme.colors.backgroundSecondary};
+`;
+
+const WelcomeMessage = styled.div`
+  color: ${({ theme }) => theme.colors.textSecondary};
   text-align: center;
-  color: ${({ theme }) => theme.colors.text};
+  font-size: 1.5rem;
+  margin-top: auto;
+  margin-bottom: auto;
 `;
 
 const MainPage = () => {
+  const [friends, setFriends] = useState([]);
+  const [message, setMessage] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchFriends = async () => {
+      try {
+        const currentUser = auth.currentUser;
+        if (!currentUser) {
+          setMessage('Please log in to view your chats.');
+          return;
+        }
+
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        const userData = userDoc.data();
+
+        if (userData && userData.friends) {
+          const friendsIds = userData.friends;
+
+          const friendsData = await Promise.all(
+            friendsIds.map(async (friendId) => {
+              const friendDoc = await getDoc(doc(db, 'users', friendId));
+              const friendData = friendDoc.data();
+              return { id: friendId, username: friendData.username || friendData.email };
+            })
+          );
+
+          setFriends(friendsData);
+        } else {
+          setMessage('You have no friends yet. Start adding some!');
+        }
+      } catch (error) {
+        console.error('Error fetching friends:', error);
+        setMessage('Failed to load friends.');
+      }
+    };
+
+    fetchFriends();
+  }, []);
 
   const handleSignOut = () => {
     signOut(auth)
@@ -41,28 +76,34 @@ const MainPage = () => {
         console.log('User signed out');
         navigate('/');
       })
-      .catch(error => {
+      .catch((error) => {
         console.error('Sign out error:', error);
       });
   };
 
+  const handleChatClick = (friend) => {
+    console.log('Chat clicked:', friend);
+    // Logic for opening a chat window or navigating to chat can be added here
+  };
+
   return (
     <MainPageContainer>
-      <h2>Main Page</h2>
-      <div>
-        <IconButton onClick={handleSignOut} title="Sign Out">
-          <MdLogout />
-        </IconButton>
-        <IconButton onClick={() => navigate('/add-friend')} title="Add a Friend">
-          <FaUserPlus />
-        </IconButton>
-        <IconButton onClick={() => navigate('/pending-requests')} title="Pending Requests">
-          <FaUserClock />
-        </IconButton>
-        <IconButton onClick={() => navigate('/friends-list')} title="Friends List">
-          <FaUserFriends />
-        </IconButton>
-      </div>
+      {/* Sidebar for navigation */}
+      <Sidebar
+        onNavigate={(path) => {
+          if (path === '/logout') handleSignOut();
+          else navigate(path);
+        }}
+      />
+
+      {/* Main Chat Area */}
+      <ChatArea>
+        {friends.length > 0 ? (
+          <ChatList chats={friends} onChatClick={handleChatClick} />
+        ) : (
+          <WelcomeMessage>{message}</WelcomeMessage>
+        )}
+      </ChatArea>
     </MainPageContainer>
   );
 };

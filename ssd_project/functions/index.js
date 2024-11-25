@@ -1,19 +1,44 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+const { onCall } = require("firebase-functions/v2/https");
+const admin = require("firebase-admin");
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+const db = admin.firestore();
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+// Cloud function to handle unfriending
+exports.unfriendUser = onCall(async (data, context) => {
+  const { currentUserId, friendId } = data;
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+  // Ensure the user is authenticated
+  if (!context.auth) {
+    throw new admin.functions.https.HttpsError(
+      "unauthenticated",
+      "User must be authenticated to unfriend someone."
+    );
+  }
+
+  try {
+    // References to both users' documents
+    const currentUserRef = db.collection("users").doc(currentUserId);
+    const friendRef = db.collection("users").doc(friendId);
+
+    // Remove friend from current user's friends array
+    await currentUserRef.update({
+      friends: admin.firestore.FieldValue.arrayRemove(friendId),
+    });
+
+    // Remove current user from friend's friends array
+    await friendRef.update({
+      friends: admin.firestore.FieldValue.arrayRemove(currentUserId),
+    });
+
+    return { message: "Friend removed successfully." };
+  } catch (error) {
+    console.error("Error unfriending:", error);
+    throw new admin.functions.https.HttpsError(
+      "internal",
+      "Failed to remove friend."
+    );
+  }
+});

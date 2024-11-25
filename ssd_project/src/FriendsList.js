@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db, auth } from './firebase-config';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, arrayRemove } from 'firebase/firestore';
 import styled from 'styled-components';
 import { FaArrowLeft } from 'react-icons/fa';
 
@@ -37,6 +37,29 @@ const BackButton = styled.button`
 
 const Title = styled.h2`
   margin-bottom: 20px;
+`;
+
+const FriendsListItem = styled.li`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+  width: 100%;
+  max-width: 300px;
+  list-style: none;
+`;
+
+const UnfriendButton = styled.button`
+  background-color: ${({ theme }) => theme.colors.danger};
+  color: #fff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.dangerHover};
+  }
 `;
 
 const FriendsList = () => {
@@ -80,6 +103,35 @@ const FriendsList = () => {
     fetchFriends();
   }, []);
 
+  const handleUnfriend = async (friendId) => {
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) {
+        setMessage('Please log in to manage your friends list.');
+        return;
+      }
+
+      // Remove friend from the current user's friends array
+      const currentUserRef = doc(db, "users", currentUser.uid);
+      await updateDoc(currentUserRef, {
+        friends: arrayRemove(friendId)
+      });
+
+      // Remove the current user from the friend's friends array
+      const friendRef = doc(db, "users", friendId);
+      await updateDoc(friendRef, {
+        friends: arrayRemove(currentUser.uid)
+      });
+
+      // Update the friends list in the component state
+      setFriends(friends.filter(friend => friend.id !== friendId));
+      setMessage('Friend removed successfully.');
+    } catch (error) {
+      console.error('Error unfriending:', error);
+      setMessage('Failed to remove friend.');
+    }
+  };
+
   return (
     <FriendsListContainer>
       <BackButton onClick={() => navigate('/main')}>
@@ -90,7 +142,10 @@ const FriendsList = () => {
       {friends.length > 0 ? (
         <ul>
           {friends.map((friend) => (
-            <li key={friend.id}>{friend.username}</li>
+            <FriendsListItem key={friend.id}>
+              {friend.username}
+              <UnfriendButton onClick={() => handleUnfriend(friend.id)}>Unfriend</UnfriendButton>
+            </FriendsListItem>
           ))}
         </ul>
       ) : (

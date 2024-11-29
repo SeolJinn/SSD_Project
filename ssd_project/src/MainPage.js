@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from './firebase-config';
 import { doc, getDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import Sidebar from './Sidebar';
 import ChatList from './ChatList';
-import styled from 'styled-components';
+import ChatWindow from './ChatWindow';
 
 const MainPageContainer = styled.div`
   display: flex;
@@ -31,6 +32,7 @@ const WelcomeMessage = styled.div`
 
 const MainPage = () => {
   const [friends, setFriends] = useState([]);
+  const [activeChat, setActiveChat] = useState(null);
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
@@ -57,9 +59,13 @@ const MainPage = () => {
             })
           );
 
+          if (friendsData.length === 0) {
+            setMessage('You currently have no friends. Add some friends to start chatting!');
+          }
+
           setFriends(friendsData);
         } else {
-          setMessage('You have no friends yet. Start adding some!');
+          setMessage('You currently have no friends. Add some friends to start chatting!');
         }
       } catch (error) {
         console.error('Error fetching friends:', error);
@@ -82,8 +88,11 @@ const MainPage = () => {
   };
 
   const handleChatClick = (friend) => {
-    console.log('Chat clicked:', friend);
-    // Logic for opening a chat window or navigating to chat can be added here
+    setActiveChat(friend);
+  };
+
+  const handleCloseChat = () => {
+    setActiveChat(null);
   };
 
   return (
@@ -98,10 +107,12 @@ const MainPage = () => {
 
       {/* Main Chat Area */}
       <ChatArea>
-        {friends.length > 0 ? (
+        {activeChat ? (
+          <ChatWindow friend={activeChat} onClose={handleCloseChat} />
+        ) : friends.length > 0 ? (
           <ChatList chats={friends} onChatClick={handleChatClick} />
         ) : (
-          <WelcomeMessage>{message}</WelcomeMessage>
+          <WelcomeMessage>{message || 'Loading your friends list...'}</WelcomeMessage>
         )}
       </ChatArea>
     </MainPageContainer>

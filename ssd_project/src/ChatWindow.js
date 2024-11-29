@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { db, auth } from './firebase-config';
-import { doc, collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { FaTimes } from 'react-icons/fa';
 
 const ChatWindowContainer = styled.div`
@@ -50,7 +50,7 @@ const Message = styled.div`
   padding: 10px 15px;
   border-radius: ${({ isMine }) =>
     isMine ? '15px 15px 0 15px' : '15px 15px 15px 0'};
-  align-self: ${({ isMine }) => (isMine ? 'flex-end' : 'flex-start')};
+  align-self: ${({ ismine }) => (ismine ? 'flex-end' : 'flex-start')};
   max-width: 70%;
   min-width: 50px;
   width: fit-content;

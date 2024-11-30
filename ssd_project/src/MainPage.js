@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from './firebase-config';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import Sidebar from './Sidebar';
 import ChatList from './ChatList';
@@ -55,7 +55,27 @@ const MainPage = () => {
             friendsIds.map(async (friendId) => {
               const friendDoc = await getDoc(doc(db, 'users', friendId));
               const friendData = friendDoc.data();
-              return { id: friendId, username: friendData.username || friendData.email };
+
+              const chatId =
+                currentUser.uid < friendId
+                  ? `${currentUser.uid}_${friendId}`
+                  : `${friendId}_${currentUser.uid}`;
+              const messagesRef = collection(db, 'chats', chatId, 'messages');
+              const lastMessageQuery = query(messagesRef, orderBy('timestamp', 'desc'), limit(1));
+              const lastMessageSnapshot = await getDocs(lastMessageQuery);
+
+              let lastMessage = 'No messages yet';
+              if (!lastMessageSnapshot.empty) {
+                lastMessage = lastMessageSnapshot.docs[0].data().text || 'No messages yet';
+              }
+
+              return {
+                id: friendId,
+                username: friendData.username || friendData.email,
+                profilePicture: friendData.profilePicture || null,
+                bio: friendData.bio || '',
+                lastMessage,
+              };
             })
           );
 

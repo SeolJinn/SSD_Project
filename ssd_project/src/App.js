@@ -10,6 +10,7 @@ import AddFriend from './AddFriend';
 import PendingRequests from './PendingRequests';
 import FriendsList from './FriendsList';
 import ProtectedRoute from './ProtectedRoute';  
+import Profile from './Profile';
 
 function App() {
   return (
@@ -45,6 +46,15 @@ function App() {
               <FriendsList />
             </ProtectedRoute>
           } />
+
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Other protected routes here */}
         </Routes>

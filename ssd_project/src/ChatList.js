@@ -28,7 +28,17 @@ const ChatItem = styled.li`
   }
 `;
 
-const Avatar = styled.div`
+const Avatar = styled.img`
+  flex-shrink: 0;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+  background-color: ${({ theme }) => theme.colors.avatarBackground};
+`;
+
+const DefaultAvatar = styled.div`
   flex-shrink: 0;
   width: 50px;
   height: 50px;
@@ -66,6 +76,15 @@ const LastMessage = styled.div`
   text-overflow: ellipsis;
 `;
 
+const Bio = styled.div`
+  font-size: 0.8rem;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 5px;
+`;
+
 const ChatList = ({ chats, onChatClick }) => {
   if (!chats || !Array.isArray(chats)) {
     return <p>No chats available</p>;
@@ -76,13 +95,19 @@ const ChatList = ({ chats, onChatClick }) => {
       {chats.map((chat) => {
         const name = chat?.username || 'Unknown';
         const lastMessage = chat?.lastMessage || 'No messages yet';
+        const bio = chat?.bio || 'No bio available';
 
         return (
           <ChatItem key={chat.id} onClick={() => onChatClick(chat)}>
-            <Avatar>{name.charAt(0).toUpperCase()}</Avatar>
+            {chat.profilePicture ? (
+              <Avatar src={chat.profilePicture} alt={`${name}'s profile`} />
+            ) : (
+              <DefaultAvatar>{name.charAt(0).toUpperCase()}</DefaultAvatar>
+            )}
             <ChatDetails>
               <ChatName>{name}</ChatName>
               <LastMessage>{lastMessage}</LastMessage>
+              <Bio>{bio}</Bio>
             </ChatDetails>
           </ChatItem>
         );

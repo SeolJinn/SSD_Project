@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { db, auth } from './firebase-config';
-import { collection, addDoc, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { collection, addDoc, onSnapshot, query, orderBy, doc, getDoc } from 'firebase/firestore';
 import { FaTimes } from 'react-icons/fa';
 
 const ChatWindowContainer = styled.div`
@@ -48,16 +48,13 @@ const MessagesContainer = styled.div`
 const Message = styled.div`
   margin: 5px 0;
   padding: 10px 15px;
-  border-radius: ${({ isMine }) =>
-    isMine ? '15px 15px 0 15px' : '15px 15px 15px 0'};
+  border-radius: ${({ ismine }) => (ismine ? '15px 15px 0 15px' : '15px 15px 15px 0')};
   align-self: ${({ ismine }) => (ismine ? 'flex-end' : 'flex-start')};
   max-width: 70%;
   min-width: 50px;
   width: fit-content;
-  background-color: ${({ isMine }) =>
-    isMine ? '#218AFF' : '#808080'};
+  background-color: ${({ isMine }) => (isMine ? '#218AFF' : '#808080')};
   color: #fff;
-
   margin-right: ${({ isMine }) => (isMine ? '10px' : 'auto')};
   margin-left: ${({ isMine }) => (isMine ? 'auto' : '10px')};
   word-wrap: break-word;
@@ -88,16 +85,17 @@ const SendButton = styled.button`
   }
 `;
 
-const ChatWindow = ({ friend, onClose }) => {
+const ChatWindow = ({ chat, onClose, isGroup }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
 
   useEffect(() => {
-    const chatId =
-      auth.currentUser.uid < friend.id
-        ? `${auth.currentUser.uid}_${friend.id}`
-        : `${friend.id}_${auth.currentUser.uid}`;
-    const messagesRef = collection(db, 'chats', chatId, 'messages');
+    const chatId = isGroup
+      ? chat.id
+      : auth.currentUser.uid < chat.id
+      ? `${auth.currentUser.uid}_${chat.id}`
+      : `${chat.id}_${auth.currentUser.uid}`;
+    const messagesRef = collection(db, isGroup ? `groups/${chatId}/messages` : `chats/${chatId}/messages`);
     const q = query(messagesRef, orderBy('timestamp', 'asc'));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -109,20 +107,26 @@ const ChatWindow = ({ friend, onClose }) => {
     });
 
     return () => unsubscribe();
-  }, [friend]);
+  }, [chat, isGroup]);
 
   const sendMessage = async () => {
     if (newMessage.trim() === '') return;
 
-    const chatId =
-      auth.currentUser.uid < friend.id
-        ? `${auth.currentUser.uid}_${friend.id}`
-        : `${friend.id}_${auth.currentUser.uid}`;
-    const messagesRef = collection(db, 'chats', chatId, 'messages');
+    const chatId = isGroup
+      ? chat.id
+      : auth.currentUser.uid < chat.id
+      ? `${auth.currentUser.uid}_${chat.id}`
+      : `${chat.id}_${auth.currentUser.uid}`;
+    const messagesRef = collection(db, isGroup ? `groups/${chatId}/messages` : `chats/${chatId}/messages`);
+
+    const currentUser = auth.currentUser;
+    const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+    const senderName = userDoc.exists() ? userDoc.data().username || 'Unknown' : 'Unknown';
 
     await addDoc(messagesRef, {
       text: newMessage,
-      senderId: auth.currentUser.uid,
+      senderId: currentUser.uid,
+      senderName: senderName,
       timestamp: new Date(),
     });
 
@@ -132,7 +136,7 @@ const ChatWindow = ({ friend, onClose }) => {
   return (
     <ChatWindowContainer>
       <ChatHeader>
-        <span>Chat with {friend.username}</span>
+        <span>{isGroup ? `Group: ${chat.name}` : `Chat with ${chat.username}`}</span>
         <CloseButton onClick={onClose}>
           <FaTimes />
         </CloseButton>
@@ -140,6 +144,7 @@ const ChatWindow = ({ friend, onClose }) => {
       <MessagesContainer>
         {messages.map((message) => (
           <Message key={message.id} isMine={message.senderId === auth.currentUser.uid}>
+            {isGroup && !message.isMine && <strong>{message.senderName}: </strong>}
             {message.text}
           </Message>
         ))}
@@ -149,7 +154,7 @@ const ChatWindow = ({ friend, onClose }) => {
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Type a message..."
+          placeholder="Type your message..."
         />
         <SendButton onClick={sendMessage}>Send</SendButton>
       </InputContainer>

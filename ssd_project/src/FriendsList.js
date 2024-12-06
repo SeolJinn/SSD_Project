@@ -45,11 +45,59 @@ const FriendsListItem = styled.li`
   justify-content: space-between;
   margin: 10px 0;
   width: 100%;
-  max-width: 300px;
+  max-width: 400px;
+  padding: 10px;
   list-style: none;
+  border-radius: 8px;
+  background-color: ${({ theme }) => theme.colors.backgroundSecondary};
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.hoverBackground};
+  }
+`;
+
+const FriendInfo = styled.div`
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  gap: 10px;
+`;
+
+const Avatar = styled.img`
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: ${({ theme }) => theme.colors.avatarBackground};
+`;
+
+const DefaultAvatar = styled.div`
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: ${({ theme }) => theme.colors.avatarBackground};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: ${({ theme }) => theme.colors.avatarText};
+`;
+
+const FriendName = styled.span`
+  flex-grow: 1;
+  font-size: 1rem;
+  color: ${({ theme }) => theme.colors.text};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 
 const UnfriendButton = styled.button`
+  flex-shrink: 0;
   background-color: ${({ theme }) => theme.colors.danger};
   color: #fff;
   padding: 5px 10px;
@@ -86,7 +134,11 @@ const FriendsList = () => {
             friendsIds.map(async (friendId) => {
               const friendDoc = await getDoc(doc(db, "users", friendId));
               const friendData = friendDoc.data();
-              return { id: friendId, username: friendData.username || friendData.email };
+              return { 
+                id: friendId, 
+                username: friendData.username || friendData.email,
+                profilePicture: friendData.profilePicture || null,
+              };
             })
           );
 
@@ -111,19 +163,16 @@ const FriendsList = () => {
         return;
       }
 
-      // Remove friend from the current user's friends array
       const currentUserRef = doc(db, "users", currentUser.uid);
       await updateDoc(currentUserRef, {
         friends: arrayRemove(friendId)
       });
 
-      // Remove the current user from the friend's friends array
       const friendRef = doc(db, "users", friendId);
       await updateDoc(friendRef, {
         friends: arrayRemove(currentUser.uid)
       });
 
-      // Update the friends list in the component state
       setFriends(friends.filter(friend => friend.id !== friendId));
       setMessage('Friend removed successfully.');
     } catch (error) {
@@ -143,7 +192,14 @@ const FriendsList = () => {
         <ul>
           {friends.map((friend) => (
             <FriendsListItem key={friend.id}>
-              {friend.username}
+              <FriendInfo>
+                {friend.profilePicture ? (
+                  <Avatar src={friend.profilePicture} alt={`${friend.username}'s avatar`} />
+                ) : (
+                  <DefaultAvatar>{friend.username.charAt(0).toUpperCase()}</DefaultAvatar>
+                )}
+                <FriendName>{friend.username}</FriendName>
+              </FriendInfo>
               <UnfriendButton onClick={() => handleUnfriend(friend.id)}>Unfriend</UnfriendButton>
             </FriendsListItem>
           ))}

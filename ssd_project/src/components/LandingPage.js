@@ -4,7 +4,7 @@ import { FaSignInAlt, FaUserPlus } from 'react-icons/fa';
 import { 
   WavyLines,
   LandingContainer,
-  Header,
+  ButtonGroup,
   Title,
   Subtitle,
   IconButton,
@@ -18,14 +18,6 @@ const LandingPage = () => {
   return (
     <LandingContainer>
       <WavyLines />
-      <Header>
-        <IconButton onClick={() => navigate('/login')}>
-          <FaSignInAlt /> Login
-        </IconButton>
-        <IconButton onClick={() => navigate('/register')}>
-          <FaUserPlus /> Register
-        </IconButton>
-      </Header>
       <Title>Connect and Communicate</Title>
       <Subtitle>Experience seamless chatting, make meaningful connections, and manage your social network with ease. Log in or sign up to get started!</Subtitle>
       <ChatBubblesContainer>
@@ -33,6 +25,14 @@ const LandingPage = () => {
         <ChatBubble isSender={true}>Thank you! Excited to try it out.</ChatBubble>
         <ChatBubble isSender={false}>Feel free to explore and connect with others!</ChatBubble>
       </ChatBubblesContainer>
+      <ButtonGroup>
+        <IconButton onClick={() => navigate('/login')}>
+          <FaSignInAlt /> Login
+        </IconButton>
+        <IconButton onClick={() => navigate('/register')}>
+          <FaUserPlus /> Register
+        </IconButton>
+      </ButtonGroup>
     </LandingContainer>
   );
 };

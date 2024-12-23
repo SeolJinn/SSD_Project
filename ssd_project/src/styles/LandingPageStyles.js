@@ -20,6 +20,18 @@ export const waveAnimation = keyframes`
   }
 `;
 
+export const glowEffect = keyframes`
+  0% {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(33, 138, 255, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0);
+  }
+`;
+
 export const LandingContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -67,7 +79,7 @@ export const Title = styled.h1`
   margin-top: 100px;
   font-size: 3.5rem;
   font-weight: bold;
-  color: ${({ theme }) => theme.colors.accent};
+  color: #218aff;
   animation: ${fadeIn} 1s ease-out;
 `;
 
@@ -82,23 +94,31 @@ export const Subtitle = styled.p`
 export const IconButton = styled.button`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  background-color: ${({ theme }) => theme.colors.buttonBackground};
-  color: ${({ theme }) => theme.colors.buttonText};
+  background-color: #218aff;
+  color: #fff;
   border: none;
-  padding: 10px 20px;
-  font-size: 1rem;
+  padding: 15px 30px;
+  font-size: 1.3rem;
   cursor: pointer;
   border-radius: 5px;
-  transition: background-color 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.accent};
+    animation: ${glowEffect} 1.5s infinite;
   }
 
   &:focus {
     outline: none;
   }
+`;
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  gap: 40px;
+  margin-top: 20px;
+  animation: ${fadeIn} 2s ease-out;
 `;
 
 export const ChatBubblesContainer = styled.div`

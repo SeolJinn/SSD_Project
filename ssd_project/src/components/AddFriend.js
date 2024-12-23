@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db, auth } from './firebase-config';
-import { 
-  AddFriendContainer, 
-  BackButton, 
-  Title, 
-  InputField, 
-  Message 
-} from '../styles/AddFriendStyles';
 import { collection, query, where, getDocs, addDoc, doc, getDoc } from 'firebase/firestore';
-import StyledButton from '../styles/StyledButton';
 import { FaArrowLeft } from 'react-icons/fa';
+import {
+  AddFriendContainer,
+  BackButton,
+  Title,
+  InputField,
+  Button,
+  Message
+} from '../styles/AddFriendStyles';
 
 const AddFriend = () => {
   const [email, setEmail] = useState('');
@@ -89,7 +89,7 @@ const AddFriend = () => {
         onChange={(e) => setEmail(e.target.value)}
         placeholder="Friend's email"
       />
-      <StyledButton onClick={handleAddFriend}>Add Friend</StyledButton>
+      <Button onClick={handleAddFriend}>Add Friend</Button>
       {message && <Message>{message}</Message>}
     </AddFriendContainer>
   );

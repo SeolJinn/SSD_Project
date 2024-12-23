@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db } from './firebase-config';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
-import StyledButton from '../styles/StyledButton';
 import { FaArrowLeft } from 'react-icons/fa';
-import {
-  RegisterContainer,
-  FormContainer,
-  BackButton,
-  Title,
-  Input,
-  Message
+import { 
+  RegisterContainer, 
+  Title, 
+  Input, 
+  Button, 
+  Message, 
+  BackButton, 
+  WavyLines 
 } from '../styles/RegisterStyles';
 
 const Register = () => {
@@ -61,34 +61,31 @@ const Register = () => {
 
   return (
     <RegisterContainer>
-      <BackButton onClick={() => navigate('/')}>
-        <FaArrowLeft /> Back
-      </BackButton>
-      <FormContainer>
-        <Title>Register</Title>
-        <Input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-        />
-        <Input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-        />
-        <Input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="Username"
-        />
-        <StyledButton onClick={registerUser}>Register</StyledButton>
+      <WavyLines />
+      <BackButton onClick={() => navigate('/')}> <FaArrowLeft /> Back </BackButton>
+      <Title>Create Account</Title>
+      <Input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+      />
+      <Input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+      />
+      <Input
+        type="text"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        placeholder="Username"
+      />
+      <Button onClick={registerUser}>Register</Button>
 
-        {error && <Message>{error}</Message>}
-        {success && <Message success>Registration successful! You can now log in.</Message>}
-      </FormContainer>
+      {error && <Message>{error}</Message>}
+      {success && <Message success>Registration successful! You can now log in.</Message>}
     </RegisterContainer>
   );
 };

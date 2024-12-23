@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db, auth } from './firebase-config';
 import { collection, query, where, getDocs, updateDoc, doc, deleteDoc, getDoc, arrayUnion } from 'firebase/firestore';
-import StyledButton from '../styles/StyledButton';
 import { FaArrowLeft } from 'react-icons/fa';
-import {
+import { 
   PendingRequestsContainer,
   BackButton,
   Title,
-  Message
-} from '../styles/PendingRequestsStyles';
+  Message,
+  Button
+ } from '../styles/PendingRequestsStyles';
 
 const PendingRequests = () => {
   const [incomingRequests, setIncomingRequests] = useState([]);
@@ -42,12 +42,12 @@ const PendingRequests = () => {
             const fromUserDoc = await getDoc(doc(db, "users", fromUserId));
             const fromUserData = fromUserDoc.exists() ? fromUserDoc.data() : null;
 
-            return { 
+            return {
               id: requestDoc.id,
               fromUserId,
               toUserId,
               fromUsername: fromUserData ? fromUserData.username : "Unknown",
-              status: request.status 
+              status: request.status
             };
           })
         );
@@ -70,18 +70,17 @@ const PendingRequests = () => {
             const toUserDoc = await getDoc(doc(db, "users", toUserId));
             const toUserData = toUserDoc.exists() ? toUserDoc.data() : null;
 
-            return { 
+            return {
               id: requestDoc.id,
               fromUserId,
               toUserId,
               toUsername: toUserData ? toUserData.username : "Unknown",
-              status: request.status 
+              status: request.status
             };
           })
         );
 
         setOutgoingRequests(outgoingRequestsData);
-
       } catch (error) {
         console.error("Error fetching friend requests:", error);
       }
@@ -91,7 +90,6 @@ const PendingRequests = () => {
   }, []);
 
   const handleAccept = async (request) => {
-    console.log("Processing request:", request); // Debugging log
     const { fromUserId, toUserId } = request;
 
     if (!fromUserId || !toUserId) {
@@ -147,8 +145,8 @@ const PendingRequests = () => {
             {incomingRequests.map(request => (
               <li key={request.id}>
                 Friend request from: {request.fromUsername}
-                <StyledButton onClick={() => handleAccept(request)}>Accept</StyledButton>
-                <StyledButton onClick={() => handleReject(request.id)}>Reject</StyledButton>
+                <Button onClick={() => handleAccept(request)}>Accept</Button>
+                <Button onClick={() => handleReject(request.id)}>Reject</Button>
               </li>
             ))}
           </ul>
@@ -162,7 +160,7 @@ const PendingRequests = () => {
             {outgoingRequests.map(request => (
               <li key={request.id}>
                 Friend request to: {request.toUsername}
-                <StyledButton onClick={() => handleReject(request.id)}>Cancel Request</StyledButton>
+                <Button onClick={() => handleReject(request.id)}>Cancel Request</Button>
               </li>
             ))}
           </ul>

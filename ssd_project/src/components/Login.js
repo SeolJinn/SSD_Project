@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth } from './firebase-config';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
-import StyledButton from '../styles/StyledButton';
 import { FaArrowLeft } from 'react-icons/fa';
 import {
   LoginContainer,
-  FormContainer,
+  WavyLines,
   BackButton,
   Title,
+  WelcomeMessage,
   Input,
+  Button,
   Message
 } from '../styles/LoginStyles';
 
@@ -56,39 +57,37 @@ const Login = () => {
 
   return (
     <LoginContainer>
-      <BackButton onClick={() => navigate('/')}>
-        <FaArrowLeft /> Back
-      </BackButton>
-      <FormContainer>
-        <Title>Login</Title>
-        <Input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-        />
-        <Input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-        />
-        <StyledButton onClick={emailSignIn}>Sign in</StyledButton>
+      <WavyLines />
+      <BackButton onClick={() => navigate('/')}> <FaArrowLeft /> Back </BackButton>
+      <Title>Welcome Back</Title>
+      <WelcomeMessage>Please log in to continue.</WelcomeMessage>
+      <Input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        placeholder="Email"
+      />
+      <Input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        placeholder="Password"
+      />
+      <Button onClick={emailSignIn}>Log In</Button>
 
-        {error && <Message>{error}</Message>}
+      {error && <Message>{error}</Message>}
 
-        {showForgotPassword && (
-          <Message>
-            Forgot password? <StyledButton onClick={resetPassword}>Click here to reset</StyledButton>
-          </Message>
-        )}
+      {showForgotPassword && (
+        <Message>
+          Forgot password? <Button onClick={resetPassword}>Click here to reset</Button>
+        </Message>
+      )}
 
-        {showRegisterPrompt && (
-          <Message>
-            Don't have an account? <StyledButton onClick={() => navigate('/register')}>Register now</StyledButton>
-          </Message>
-        )}
-      </FormContainer>
+      {showRegisterPrompt && (
+        <Message>
+          Don\'t have an account? <Button onClick={() => navigate('/register')}>Register now</Button>
+        </Message>
+      )}
     </LoginContainer>
   );
 };

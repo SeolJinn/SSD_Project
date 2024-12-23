@@ -1,9 +1,6 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaSignInAlt, FaUserPlus } from 'react-icons/fa';
 import styled from 'styled-components';
 
-const LandingContainer = styled.div`
+export const LandingContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -15,7 +12,7 @@ const LandingContainer = styled.div`
   position: relative;
 `;
 
-const Header = styled.div`
+export const Header = styled.div`
   position: absolute;
   top: 10px;  // Position very close to the top
   right: 10px;  // Position very close to the right edge
@@ -23,18 +20,18 @@ const Header = styled.div`
   gap: 10px;
 `;
 
-const Title = styled.h1`
+export const Title = styled.h1`
   margin-top: 100px;
   font-size: 2.5rem;
 `;
 
-const Subtitle = styled.p`
+export const Subtitle = styled.p`
   margin-bottom: 40px;
   font-size: 1.2rem;
   color: ${({ theme }) => theme.colors.text};
 `;
 
-const IconButton = styled.button`
+export const IconButton = styled.button`
   display: flex;
   align-items: center;
   gap: 8px;
@@ -55,24 +52,3 @@ const IconButton = styled.button`
     outline: none;
   }
 `;
-
-const LandingPage = () => {
-  const navigate = useNavigate();
-
-  return (
-    <LandingContainer>
-      <Header>
-        <IconButton onClick={() => navigate('/login')}>
-          <FaSignInAlt /> Login
-        </IconButton>
-        <IconButton onClick={() => navigate('/register')}>
-          <FaUserPlus /> Register
-        </IconButton>
-      </Header>
-      <Title>Welcome to Our App</Title>
-      <Subtitle>Discover our features and get started by logging in or creating an account!</Subtitle>
-    </LandingContainer>
-  );
-};
-
-export default LandingPage;

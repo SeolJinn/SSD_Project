@@ -1,58 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db, auth } from './firebase-config';
+import { 
+  AddFriendContainer, 
+  BackButton, 
+  Title, 
+  InputField, 
+  Message 
+} from '../styles/AddFriendStyles';
 import { collection, query, where, getDocs, addDoc, doc, getDoc } from 'firebase/firestore';
-import styled from 'styled-components';
-import StyledButton from './StyledButton';
+import StyledButton from '../styles/StyledButton';
 import { FaArrowLeft } from 'react-icons/fa';
-
-const AddFriendContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  padding: 50px;
-  color: ${({ theme }) => theme.colors.text};
-  background-color: ${({ theme }) => theme.colors.background};
-  min-height: 100vh;
-  position: relative;
-`;
-
-const BackButton = styled.button`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: none;
-  border: none;
-  color: ${({ theme }) => theme.colors.buttonText};
-  font-size: 1.2rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-
-  &:hover {
-    color: ${({ theme }) => theme.colors.accent};
-  }
-`;
-
-const Title = styled.h2`
-  margin-bottom: 20px;
-`;
-
-const Message = styled.p`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-size: 0.9rem;
-  margin-top: 20px;
-`;
-
-const InputField = styled.input`
-  padding: 10px;
-  margin: 10px;
-  border-radius: 5px;
-  border: 1px solid ${({ theme }) => theme.colors.border};
-  width: 250px;
-`;
 
 const AddFriend = () => {
   const [email, setEmail] = useState('');

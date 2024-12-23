@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from './firebase-config';
 import { doc, getDoc } from 'firebase/firestore';
@@ -7,27 +6,11 @@ import { signOut } from 'firebase/auth';
 import Sidebar from './Sidebar';
 import ChatList from './ChatList';
 import ChatWindow from './ChatWindow';
-
-const MainPageContainer = styled.div`
-  display: flex;
-  height: 100vh;
-  background-color: ${({ theme }) => theme.colors.background};
-`;
-
-const ChatArea = styled.div`
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  background-color: ${({ theme }) => theme.colors.backgroundSecondary};
-`;
-
-const InfoMessage = styled.div`
-  text-align: center;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  margin: auto;
-  font-size: 1rem;
-`;
+import {
+  MainPageContainer,
+  ChatArea,
+  InfoMessage
+} from '../styles/MainPageStyles';
 
 const MainPage = () => {
   const [friends, setFriends] = useState([]);

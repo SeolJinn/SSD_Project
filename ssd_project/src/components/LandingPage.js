@@ -1,12 +1,15 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaSignInAlt, FaUserPlus } from 'react-icons/fa';
-import {
+import { 
+  WavyLines,
   LandingContainer,
   Header,
   Title,
   Subtitle,
-  IconButton
+  IconButton,
+  ChatBubblesContainer,
+  ChatBubble
 } from '../styles/LandingPageStyles';
 
 const LandingPage = () => {
@@ -14,6 +17,7 @@ const LandingPage = () => {
 
   return (
     <LandingContainer>
+      <WavyLines />
       <Header>
         <IconButton onClick={() => navigate('/login')}>
           <FaSignInAlt /> Login
@@ -22,8 +26,13 @@ const LandingPage = () => {
           <FaUserPlus /> Register
         </IconButton>
       </Header>
-      <Title>Welcome to Our App</Title>
-      <Subtitle>Discover our features and get started by logging in or creating an account!</Subtitle>
+      <Title>Connect and Communicate</Title>
+      <Subtitle>Experience seamless chatting, make meaningful connections, and manage your social network with ease. Log in or sign up to get started!</Subtitle>
+      <ChatBubblesContainer>
+        <ChatBubble isSender={false}>Hi there! Welcome to our app.</ChatBubble>
+        <ChatBubble isSender={true}>Thank you! Excited to try it out.</ChatBubble>
+        <ChatBubble isSender={false}>Feel free to explore and connect with others!</ChatBubble>
+      </ChatBubblesContainer>
     </LandingContainer>
   );
 };

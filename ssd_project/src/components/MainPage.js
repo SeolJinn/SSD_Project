@@ -9,7 +9,7 @@ import ChatWindow from './ChatWindow';
 import {
   MainPageContainer,
   ChatArea,
-  InfoMessage
+  InfoMessage,
 } from '../styles/MainPageStyles';
 
 const MainPage = () => {

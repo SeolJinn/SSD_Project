@@ -99,8 +99,8 @@ export const MessagesContainer = styled.div`
 export const Message = styled.div`
   margin: 5px 0;
   padding: 10px 15px;
-  border-radius: ${({ ismine }) => (ismine ? '15px 15px 0 15px' : '15px 15px 15px 0')};
-  align-self: ${({ ismine }) => (ismine ? 'flex-end' : 'flex-start')};
+  border-radius: ${({ isMine }) => (isMine ? '15px 15px 0 15px' : '15px 15px 15px 0')};
+  align-self: ${({ isMine }) => (isMine ? 'flex-end' : 'flex-start')};
   max-width: 70%;
   min-width: 50px;
   width: fit-content;

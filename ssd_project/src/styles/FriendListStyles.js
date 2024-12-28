@@ -1,4 +1,16 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+export const glowEffect = keyframes`
+  0% {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0);
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(33, 138, 255, 0.5);
+  }
+  100% {
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0);
+  }
+`;
 
 export const FriendsListContainer = styled.div`
   display: flex;
@@ -7,7 +19,8 @@ export const FriendsListContainer = styled.div`
   text-align: center;
   padding: 50px;
   color: ${({ theme }) => theme.colors.text};
-  background-color: ${({ theme }) => theme.colors.background};
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1));
+  backdrop-filter: blur(10px);
   min-height: 100vh;
   position: relative;
 `;
@@ -18,7 +31,7 @@ export const BackButton = styled.button`
   left: 10px;
   background: none;
   border: none;
-  color: ${({ theme }) => theme.colors.buttonText};
+  color: ${({ theme }) => theme.colors.text};
   font-size: 1.2rem;
   cursor: pointer;
   display: flex;
@@ -31,7 +44,10 @@ export const BackButton = styled.button`
 `;
 
 export const Title = styled.h2`
-  margin-bottom: 20px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #218aff;
+  margin-bottom: 40px;
 `;
 
 export const FriendsListItem = styled.li`
@@ -57,6 +73,7 @@ export const FriendInfo = styled.div`
   align-items: center;
   flex-grow: 1;
   gap: 10px;
+  margin-right: 20px;
 `;
 
 export const Avatar = styled.img`
@@ -93,14 +110,21 @@ export const FriendName = styled.span`
 
 export const UnfriendButton = styled.button`
   flex-shrink: 0;
+  padding: 10px;
   background-color: ${({ theme }) => theme.colors.danger};
   color: #fff;
-  padding: 5px 10px;
   border: none;
   border-radius: 5px;
+  font-size: 1rem;
   cursor: pointer;
+  transition: box-shadow 0.3s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.dangerHover};
+    animation: ${glowEffect} 1.5s infinite;
   }
+`;
+
+export const Message = styled.p`
+  color: ${({ success }) => (success ? 'green' : 'red')};
+  margin-top: 15px;
 `;

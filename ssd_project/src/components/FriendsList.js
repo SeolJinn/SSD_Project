@@ -3,7 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { db, auth } from './firebase-config';
 import { doc, getDoc, updateDoc, arrayRemove } from 'firebase/firestore';
 import { FaArrowLeft } from 'react-icons/fa';
-import { FriendsListContainer, BackButton, Title, FriendsListItem, FriendInfo, Avatar, DefaultAvatar, FriendName, UnfriendButton } from '../styles/FriendListStyles';
+import {
+  FriendsListContainer,
+  BackButton,
+  Title,
+  FriendsListItem,
+  FriendInfo,
+  Avatar,
+  DefaultAvatar,
+  FriendName,
+  UnfriendButton,
+  Message
+} from '../styles/FriendListStyles';
 
 const FriendsList = () => {
   const [friends, setFriends] = useState([]);
@@ -29,8 +40,8 @@ const FriendsList = () => {
             friendsIds.map(async (friendId) => {
               const friendDoc = await getDoc(doc(db, "users", friendId));
               const friendData = friendDoc.data();
-              return { 
-                id: friendId, 
+              return {
+                id: friendId,
                 username: friendData.username || friendData.email,
                 profilePicture: friendData.profilePicture || null,
               };
@@ -82,7 +93,7 @@ const FriendsList = () => {
         <FaArrowLeft /> Back
       </BackButton>
       <Title>Friends List</Title>
-      {message && <p>{message}</p>}
+      {message && <Message>{message}</Message>}
       {friends.length > 0 ? (
         <ul>
           {friends.map((friend) => (

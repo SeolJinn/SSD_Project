@@ -5,14 +5,15 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import {
- ProfileContainer,
- Header,
- BackButton,
- Title,
- InputField,
- SaveButton,
- ProfilePictureContainer,
- ProfilePicture
+  ProfileContainer,
+  Header,
+  BackButton,
+  Title,
+  InputField,
+  SaveButton,
+  ProfilePictureContainer,
+  ProfilePicture,
+  Message,
 } from '../styles/ProfileStyles';
 
 const Profile = () => {
@@ -128,12 +129,12 @@ const Profile = () => {
     <ProfileContainer>
       <Header>
         <BackButton onClick={() => navigate('/main')}>
-          <FaArrowLeft />
+          <FaArrowLeft /> Back
         </BackButton>
         <Title>Edit Profile</Title>
       </Header>
 
-      {message && <p>{message}</p>}
+      {message && <Message>{message}</Message>}
 
       <ProfilePictureContainer>
         {userData.profilePicture && (

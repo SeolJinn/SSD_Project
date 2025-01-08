@@ -17,11 +17,10 @@ import {
   AchievementsSection,
   AchievementTitle,
   AchievementRow,
-  AchievementLabel,
-  AchievementCount
+  AchievementLabel
 } from '../styles/ProfileStyles';
 import AchievementBadge from './AchievementBadge';
-import { calculateLevel, getProgress, getNextThreshold } from './Achievements';
+import { calculateLevel, getNextThreshold } from './Achievements';
 
 const Profile = () => {
   const [userData, setUserData] = useState({

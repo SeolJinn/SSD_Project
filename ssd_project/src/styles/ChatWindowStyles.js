@@ -1,12 +1,11 @@
 import styled from 'styled-components';
 
 export const ChatWindowContainer = styled.div`
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  background-color: ${({ theme }) => theme.colors.backgroundSecondary};
-  position: relative;
-  margin-left: 50px;
+ display: flex;
+ flex-direction: column;
+ height: calc(100vh - 40px);
+ min-height: 400px;
+ margin-left: 50px;
 `;
 
 export const ChatHeader = styled.div`
@@ -35,7 +34,7 @@ export const CloseButton = styled.button`
 
 export const MembersButton = styled.button`
   position: absolute;
-  right: 50px; /* Move it closer to the left side of the header */
+  right: 50px;
   background: none;
   border: none;
   color: ${({ theme }) => theme.colors.textSecondary};
@@ -88,12 +87,12 @@ export const LeaveGroupButton = styled.button`
 `;
 
 export const MessagesContainer = styled.div`
-  flex-grow: 1;
+  flex: 1;
   overflow-y: auto;
   padding: 10px;
+  display: flex;
+  flex-direction: column-reverse;
   background-color: ${({ theme }) => theme.colors.background};
-  border-radius: 8px;
-  margin-bottom: 10px;
 `;
 
 export const Message = styled.div`

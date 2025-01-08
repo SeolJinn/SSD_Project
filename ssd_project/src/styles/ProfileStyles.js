@@ -108,3 +108,37 @@ export const Message = styled.p`
   color: ${({ success }) => (success ? 'green' : 'red')};
   margin-top: 15px;
 `;
+
+export const AchievementsSection = styled.div`
+  width: 100%;
+  max-width: 400px;
+  margin: 20px 0;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+`;
+
+export const AchievementTitle = styled.h3`
+  color: ${({ theme }) => theme.colors.text};
+  margin-bottom: 15px;
+  text-align: center;
+`;
+
+export const AchievementRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 10px 0;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+`;
+
+export const AchievementLabel = styled.span`
+  color: ${({ theme }) => theme.colors.text};
+`;
+
+export const AchievementCount = styled.span`
+  color: ${({ theme }) => theme.colors.accent};
+  font-weight: bold;
+`;

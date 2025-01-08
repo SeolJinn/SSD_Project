@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db, auth } from './firebase-config';
+import { increment } from 'firebase/firestore';
 import { collection, addDoc, onSnapshot, query, orderBy, doc, getDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { FaTimes, FaUsers } from 'react-icons/fa';
 import {
@@ -109,6 +110,11 @@ const ChatWindow = ({ chat, onClose, isGroup }) => {
       timestamp: new Date(),
     });
 
+    const userRef = doc(db, 'users', currentUser.uid);
+    await updateDoc(userRef, {
+      messageCount: increment(1)
+    });
+
     setNewMessage('');
   };
 
@@ -116,12 +122,16 @@ const ChatWindow = ({ chat, onClose, isGroup }) => {
     try {
       const currentUser = auth.currentUser;
       const groupRef = doc(db, 'groups', chat.id);
-
+      
       await updateDoc(groupRef, {
         members: arrayRemove(currentUser.uid),
       });
-
-      alert('You have left the group.');
+  
+      const userRef = doc(db, 'users', currentUser.uid);
+      await updateDoc(userRef, {
+        groupCount: increment(-1)
+      });
+  
       onClose();
     } catch (error) {
       console.error('Error leaving group:', error);
@@ -132,18 +142,23 @@ const ChatWindow = ({ chat, onClose, isGroup }) => {
   const addMembersToGroup = async () => {
     try {
       const groupRef = doc(db, 'groups', chat.id);
-
       const newMembers = selectedFriends.map((friend) => friend.id);
+      
       await updateDoc(groupRef, {
         members: arrayUnion(...newMembers),
       });
-
-      alert('Members added successfully!');
+  
+      const memberUpdates = newMembers.map(memberId => 
+        updateDoc(doc(db, 'users', memberId), {
+          groupCount: increment(1)
+        })
+      );
+      await Promise.all(memberUpdates);
+  
       setShowAddMembers(false);
       setSelectedFriends([]);
     } catch (error) {
       console.error('Error adding members:', error);
-      alert('Failed to add members.');
     }
   };
 

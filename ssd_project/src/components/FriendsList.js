@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { db, auth } from './firebase-config';
 import { doc, getDoc, updateDoc, arrayRemove } from 'firebase/firestore';
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import {
   FriendsListContainer,
   BackButton,
@@ -13,12 +13,17 @@ import {
   DefaultAvatar,
   FriendName,
   UnfriendButton,
-  Message
+  Message,
+  AchievementContainer,
+  ExpandButton
 } from '../styles/FriendListStyles';
+import AchievementBadge from './AchievementBadge';
+import { calculateLevel } from './Achievements';
 
 const FriendsList = () => {
   const [friends, setFriends] = useState([]);
   const [message, setMessage] = useState('');
+  const [expandedFriend, setExpandedFriend] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,20 +39,20 @@ const FriendsList = () => {
         const userData = userDoc.data();
 
         if (userData && userData.friends) {
-          const friendsIds = userData.friends;
-
           const friendsData = await Promise.all(
-            friendsIds.map(async (friendId) => {
+            userData.friends.map(async (friendId) => {
               const friendDoc = await getDoc(doc(db, "users", friendId));
               const friendData = friendDoc.data();
               return {
                 id: friendId,
                 username: friendData.username || friendData.email,
                 profilePicture: friendData.profilePicture || null,
+                messageCount: friendData.messageCount || 0,
+                groupCount: friendData.groupCount || 0,
+                friends: friendData.friends || []
               };
             })
           );
-
           setFriends(friendsData);
         } else {
           setMessage('You have no friends added yet.');
@@ -87,6 +92,10 @@ const FriendsList = () => {
     }
   };
 
+  const toggleExpand = (friendId) => {
+    setExpandedFriend(expandedFriend === friendId ? null : friendId);
+  };
+
   return (
     <FriendsListContainer>
       <BackButton onClick={() => navigate('/main')}>
@@ -97,17 +106,44 @@ const FriendsList = () => {
       {friends.length > 0 ? (
         <ul>
           {friends.map((friend) => (
-            <FriendsListItem key={friend.id}>
-              <FriendInfo>
-                {friend.profilePicture ? (
-                  <Avatar src={friend.profilePicture} alt={`${friend.username}'s avatar`} />
-                ) : (
-                  <DefaultAvatar>{friend.username.charAt(0).toUpperCase()}</DefaultAvatar>
-                )}
-                <FriendName>{friend.username}</FriendName>
-              </FriendInfo>
-              <UnfriendButton onClick={() => handleUnfriend(friend.id)}>Unfriend</UnfriendButton>
-            </FriendsListItem>
+            <React.Fragment key={friend.id}>
+              <FriendsListItem>
+                <FriendInfo>
+                  {friend.profilePicture ? (
+                    <Avatar src={friend.profilePicture} alt={`${friend.username}'s avatar`} />
+                  ) : (
+                    <DefaultAvatar>{friend.username.charAt(0).toUpperCase()}</DefaultAvatar>
+                  )}
+                  <FriendName>{friend.username}</FriendName>
+                </FriendInfo>
+                
+                <AchievementContainer>
+                  <AchievementBadge
+                    level={calculateLevel(friend.messageCount, 'MESSAGES')}
+                    size="sm"
+                  />
+                  <AchievementBadge
+                    level={calculateLevel(friend.friends.length, 'FRIENDS')}
+                    size="sm"
+                  />
+                  <AchievementBadge
+                    level={calculateLevel(friend.groupCount, 'GROUPS')}
+                    size="sm"
+                  />
+                  <ExpandButton onClick={() => toggleExpand(friend.id)}>
+                    {expandedFriend === friend.id ? <FaChevronUp /> : <FaChevronDown />}
+                  </ExpandButton>
+                </AchievementContainer>
+                <UnfriendButton onClick={() => handleUnfriend(friend.id)}>Unfriend</UnfriendButton>
+              </FriendsListItem>
+              {expandedFriend === friend.id && (
+                <div className="w-full p-4 bg-gray-50 border-t border-b border-gray-200">
+                  <div>Messages Sent: {friend.messageCount}</div>
+                  <div>Friends: {friend.friends.length}</div>
+                  <div>Groups: {friend.groupCount}</div>
+                </div>
+              )}
+            </React.Fragment>
           ))}
         </ul>
       ) : (

@@ -20,7 +20,7 @@ import {
   FriendName
 } from '../styles/ChatListStyles';
 import { db, storage, auth } from './firebase-config';
-import { collection, addDoc, setDoc, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { collection, addDoc, setDoc, query, where, getDocs, doc, getDoc, updateDoc, increment } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const ChatList = ({ chats, onChatClick }) => {
@@ -118,6 +118,12 @@ const ChatList = ({ chats, onChatClick }) => {
       }
 
       alert('Group created successfully!');
+      const updates = [currentUser.uid, ...selectedFriends].map(userId => 
+        updateDoc(doc(db, 'users', userId), {
+          groupCount: increment(1)
+        })
+      );
+      await Promise.all(updates);  
 
       setShowGroupForm(false);
       setGroupName('');

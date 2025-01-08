@@ -14,7 +14,14 @@ import {
   ProfilePictureContainer,
   ProfilePicture,
   Message,
+  AchievementsSection,
+  AchievementTitle,
+  AchievementRow,
+  AchievementLabel,
+  AchievementCount
 } from '../styles/ProfileStyles';
+import AchievementBadge from './AchievementBadge';
+import { calculateLevel, getProgress, getNextThreshold } from './Achievements';
 
 const Profile = () => {
   const [userData, setUserData] = useState({
@@ -22,6 +29,8 @@ const Profile = () => {
     email: '',
     bio: '',
     profilePicture: '',
+    messageCount: 0,
+    groupCount: 0
   });
   const [originalData, setOriginalData] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
@@ -31,7 +40,6 @@ const Profile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       const currentUser = auth.currentUser;
-
       if (!currentUser) {
         setMessage('Please log in to access your profile.');
         return;
@@ -124,6 +132,24 @@ const Profile = () => {
       setProfilePicture(e.target.files[0]);
     }
   };
+  
+  const achievements = [
+    {
+      type: 'MESSAGES',
+      label: 'Messages Sent',
+      count: userData.messageCount || 0,
+    },
+    {
+      type: 'FRIENDS',
+      label: 'Friends',
+      count: (userData.friends || []).length,
+    },
+    {
+      type: 'GROUPS',
+      label: 'Groups Joined',
+      count: userData.groupCount || 0,
+    },
+  ];
 
   return (
     <ProfileContainer>
@@ -161,6 +187,29 @@ const Profile = () => {
         value={userData.bio}
         onChange={(e) => setUserData({ ...userData, bio: e.target.value })}
       />
+
+<AchievementsSection>
+ <AchievementTitle>Achievements</AchievementTitle>
+ {achievements.map((achievement) => (
+   <AchievementRow key={achievement.type} className="flex flex-row justify-between items-start w-full">
+     <div className="flex flex-col">
+       <div className="flex items-center gap-2">
+         <AchievementLabel>{achievement.label}</AchievementLabel>
+         <span className="text-gray-500">: {achievement.count}</span>
+       </div>
+       <div className="text-sm text-gray-500">
+         Next Badge: {getNextThreshold(achievement.count, achievement.type) || 'Max Level!'}
+       </div>
+     </div>
+     <AchievementBadge
+       level={calculateLevel(achievement.count, achievement.type)}
+       type={achievement.type}
+       size="md"
+     />
+   </AchievementRow>
+ ))}
+</AchievementsSection>
+
       <SaveButton onClick={handleSave}>Save</SaveButton>
     </ProfileContainer>
   );

@@ -128,3 +128,21 @@ export const Message = styled.p`
   color: ${({ success }) => (success ? 'green' : 'red')};
   margin-top: 15px;
 `;
+
+export const AchievementContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-right: 16px;
+`;
+
+export const ExpandButton = styled.button`
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.colors.accent};
+  cursor: pointer;
+  padding: 4px;
+  
+  &:hover {
+    opacity: 0.8;
+  }
+`;

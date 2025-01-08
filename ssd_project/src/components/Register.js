@@ -42,7 +42,9 @@ const Register = () => {
       await setDoc(doc(db, "users", user.uid), {
         email: user.email,
         username: username,
-        friends: []
+        friends: [],
+        messageCount: 0,
+        groupCount: 0
       });
 
       console.log('User registered:', user);

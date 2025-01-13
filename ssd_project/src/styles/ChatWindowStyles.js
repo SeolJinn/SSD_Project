@@ -91,7 +91,7 @@ export const MessagesContainer = styled.div`
   overflow-y: auto;
   padding: 10px;
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   background-color: ${({ theme }) => theme.colors.background};
 `;
 
